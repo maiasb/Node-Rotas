@@ -1,0 +1,16 @@
+{
+  "name": "Primeiro-Projeto-Nodejs",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "Caio Maia <caio.maiasb@gmail.com>",
+  "license": "MIT",
+  "scripts":{
+    "dev": "nodemon"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
