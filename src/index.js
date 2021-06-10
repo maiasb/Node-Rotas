@@ -1,4 +1,8 @@
+// LIBS
+const { json } = require('express');
 const express = require('express');
+// Função da lib para o recebimento de id's
+const { uuid } = require('uuidv4');
 
 const app = express();
 
@@ -22,56 +26,74 @@ app.use(express.json());
  * Request Body: Conteúdo na hora de criar ou editar um recurso (JSON);
  */
 
+// Array de projects
+const projects = [];
+
 app.get('/projects', (request, response) => {
-    // Todos os parâmetros
-    const query = request.query;
-    // Parâmetros desestruturados
-    const { title, owner } = request.query;
+    // Recebimento do parâmetro do recurso
+    const { title } = request.query;
 
-    console.log(query)
-    console.log(title)
-    console.log(owner)
+    // Verifica em cada projeto, dos projetos, se existe a palavra enviada no parâmetro do title
+    // Pesquisar sobre
+    const results = title
+        ? projects.filter(project => project.title.includes(title))
+        : projects;
 
-    return response.json([
-        'Project 01',
-        'Project 02'
-    ]);
+    // Lista todos os projetos
+    return response.json(results);
 });
 
 app.post('/projects', (request, response) => {
-    const body = request.body;
-    const {title, owner} = request.body;
+    // Parâmetros recebidos do recurso
+    const { title, owner } = request.body;
 
-    console.log(body);
-    console.log(title);
-    console.log(owner)
+    // Gera o id
+    const project = { id: uuid(), title, owner };
 
-    return response.json([
-        'Project 01',
-        'Project 02',
-        'Project 03'
-    ]);
+    // Adiciona o projeto criado no array
+    projects.push(project);
+
+    return response.json(project);
 });
 
 app.put('/projects/:id', (request, response) => {
-    const params = request.params;
+    // Parâmetros recebidos do recurso
     const { id } = request.params;
-    
-    console.log(params);
-    console.log(id)
+    const { title, owner } = request.body;
 
-    return response.json([
-        'Project 04',
-        'Project 02',
-        'Project 03'
-    ]);
+    // Busca nos arrays o id enviado pelo recurso
+    const projectIndex = projects.findIndex(project => project.id === id);
+
+    // Mensagem de erro caso o id não exista
+    if (projectIndex < 0) {
+        return response.status(400).json({ 'error': 'Project not found.' })
+    }
+
+    // Declaração do projeto
+    const project = {
+        id,
+        title,
+        owner
+    }
+
+    // Adicionando o projeto no array
+    projects[projectIndex] = project;
+
+    return response.json(project);
 });
 
 app.delete('/projects/:id', (request, response) => {
-    return response.json([
-        'Project 02',
-        'Project 03'
-    ]);
+    const { id } = request.params;
+
+    const projectIndex = projects.findIndex(project => project.id === id);
+
+    if (projectIndex < 0) {
+        return response.status(400).json({ 'error': 'Project not found.' })
+    }
+
+    projects.splice(projectIndex, 1);
+
+    return response.status(204).send();
 });
 
 app.listen(3333, () => {
