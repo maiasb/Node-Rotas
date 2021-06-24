@@ -33,7 +33,12 @@ const { uuid, isUuid } = require('uuidv4');
 const routes = Router();
 
 // Array de projects
-const projects: Array<object> = [];
+const projects: Array<Project> = [];
+type Project = {
+    id: String;
+    title: String;
+    owner: String;
+}
 
 routes.get('/projects', (request, response) => {
     // Parâmetros recebidos do recurso
@@ -53,7 +58,7 @@ routes.post('/projects', (request, response) => {
     const { title, owner } = request.body;
 
     // Gera o id
-    const project: object = { id: uuid(), title, owner };
+    const project: Project = { id: uuid(), title, owner };
 
     // Adiciona o projeto criado no array
     projects.push(project);
@@ -75,10 +80,10 @@ routes.put('/projects/:id', (request, response) => {
     }
 
     // Declaração do projeto
-    const project: object = {
-        id: Number,
-        title: String,
-        owner: String
+    const project: Project = {
+        id,
+        title,
+        owner
     }
 
     projects.push(project)
