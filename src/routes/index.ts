@@ -25,7 +25,7 @@
  */
 
 // LIBS
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 
 // Função da lib para o recebimento de id's
 const { uuid, isUuid } = require('uuidv4');
@@ -40,21 +40,21 @@ type Project = {
     owner: String;
 }
 
-routes.get('/projects', (request, response) => {
+routes.get('/projects', (request: Request, response: Response) => {
     // Parâmetros recebidos do recurso
     const { title } = request.query;
 
     // Verifica em cada projeto do array, se existe a palavra enviada no parâmetro do title
     // Pesquisar sobre
-    const results = title
-        ? projects.filter(project => project.title.includes(title))
+    const results: Array<Project> = title
+        ? projects.filter(project => project.title.includes(title.toString()))
         : projects;
 
     // Lista todos os projetos com o title incluso
     return response.json(results);
 });
 
-routes.post('/projects', (request, response) => {
+routes.post('/projects', (request: Request, response: Response) => {
     const { title, owner } = request.body;
 
     // Gera o id
@@ -67,7 +67,7 @@ routes.post('/projects', (request, response) => {
     return response.json(project);
 });
 
-routes.put('/projects/:id', (request, response) => {
+routes.put('/projects/:id', (request: Request, response: Response) => {
     const { id } = request.params;
     const { title, owner } = request.body;
 
@@ -92,7 +92,7 @@ routes.put('/projects/:id', (request, response) => {
     return response.json(project);
 });
 
-routes.delete('/projects/:id', (request, response) => {
+routes.delete('/projects/:id', (request: Request, response: Response) => {
     const { id } = request.params;
 
     const projectIndex = projects.findIndex(project => project.id === id);
